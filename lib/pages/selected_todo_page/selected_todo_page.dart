@@ -35,6 +35,7 @@ class _SelectedToDoState extends State<SelectedToDo> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.background,
+        // Отменить добавление (нажали крестик)
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
@@ -42,11 +43,21 @@ class _SelectedToDoState extends State<SelectedToDo> {
           },
         ),
         actions: [
+          // Сохраняем изменения в списке дел
           TextButton(
             onPressed: () {
               setState(() {
-                todos.add(ToDoModel(text: _textController.text));
-                Navigator.of(context).pop();
+                todos[widget.index] = todos[widget.index].copyWith(
+                  _textController.text,
+                  widget.deadLine,
+                  widget.check,
+                );
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ToDoListPage(),
+                    ),
+                    (route) => false);
               });
             },
             child: const Text(
@@ -64,7 +75,12 @@ class _SelectedToDoState extends State<SelectedToDo> {
         children: [
           Container(
             height: 189,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              left: 18,
+              top: 8,
+              right: 18,
+              bottom: 4,
+            ),
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -76,6 +92,8 @@ class _SelectedToDoState extends State<SelectedToDo> {
                 border: InputBorder.none,
               ),
               controller: _textController,
+              maxLines: 100,
+              strutStyle: const StrutStyle(height: 1.3),
             ),
           ),
           Padding(
@@ -86,34 +104,61 @@ class _SelectedToDoState extends State<SelectedToDo> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Дедлайн',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Colors.black),
+                TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.all(0),
+                    ),
+                  ),
+                  child: Text(
+                    'Дедлайн',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                  ),
                 ),
                 Checkbox(
-                  value: widget.check ?? false,
+                  value: widget.check,
                   onChanged: (value) {
                     final check = value ?? false;
-                    setState(() {
-                      todos[widget.index] = todos[widget.index].copyWith(
-                        widget.text,
-                        widget.deadLine,
-                        check,
-                      );
-                    });
+                    setState(
+                      () {
+                        todos[widget.index] = todos[widget.index].copyWith(
+                          widget.text,
+                          widget.deadLine,
+                          check,
+                        );
+                      },
+                    );
                   },
+                  activeColor: const Color(0xFF45B443),
                 )
               ],
             ),
           ),
+          const Divider(
+            indent: 16,
+            endIndent: 16,
+            height: 1,
+            color: Color(0xFFD9D9D9),
+          ),
           MaterialButton(
+            // Кнопка удаления заметки
             onPressed: () {
-              setState(() {
-                Navigator.of(context).pop(todos.removeAt(widget.index));
-              });
+              setState(
+                () {
+                  todos.removeAt(widget.index);
+                },
+              );
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ToDoListPage(),
+                ),
+                (route) => false,
+              );
             },
             child: Row(
               children: [

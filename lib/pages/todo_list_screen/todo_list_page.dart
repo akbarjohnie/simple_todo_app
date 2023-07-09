@@ -13,8 +13,6 @@ class ToDoListPage extends StatefulWidget {
 }
 
 class _ToDoListPageState extends State<ToDoListPage> {
-  late final int todosIndex;
-
   @override
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
@@ -41,7 +39,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
             itemCount: todos.length,
             itemBuilder: (context, index) {
               return Dismissible(
-                key: ValueKey<int>(int.parse(todos[index].toString())),
+                key: UniqueKey(),
                 secondaryBackground: Container(
                   color: Colors.red,
                   child: const Icon(
@@ -56,42 +54,60 @@ class _ToDoListPageState extends State<ToDoListPage> {
                 ),
                 onDismissed: (DismissDirection direction) {
                   if (direction == DismissDirection.endToStart) {
-                    setState(() {
-                      todos.removeAt(index);
-                    });
+                    setState(
+                      () {
+                        todos.removeAt(index);
+                      },
+                    );
                   }
                 },
-                child: ListTile(
-                  titleTextStyle: themeData.textTheme.labelLarge!.copyWith(
-                    color: Colors.black,
-                  ),
-                  leading: Checkbox(
-                    value: todos[index].done,
-                    onChanged: (value) {
-                      final cheched = value ?? false;
-                      setState(() {
-                        todos[index] = todos[index].copyWith(
-                          todos[index].text,
-                          todos[index].deadLine,
-                          cheched,
+                child: SizedBox(
+                  height: 40,
+                  child: ListTile(
+                    // subtitle: Text("${todos[index].deadLine}") ,
+                    titleTextStyle: themeData.textTheme.bodyLarge!.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    leading: Checkbox(
+                      value: todos[index].done,
+                      onChanged: (value) {
+                        final cheched = value ?? false;
+                        setState(
+                          () {
+                            todos[index] = todos[index].copyWith(
+                              todos[index].text,
+                              todos[index].deadLine,
+                              cheched,
+                            );
+                          },
                         );
-                      });
+                      },
+                      activeColor: const Color(0xFF45B443),
+                    ),
+                    title: Text(
+                      todos[index].text,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Visibility(
+                      visible: (todos[index].deadLine != null),
+                      replacement: const SizedBox.shrink(),
+                      child: Text("${todos[index].deadLine}"),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectedToDo(
+                            index: index,
+                            text: todos[index].text,
+                            deadLine: todos[index].deadLine,
+                            check: todos[index].done,
+                          ),
+                        ),
+                      );
                     },
                   ),
-                  title: Text(todos[index].text),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedToDo(
-                          index: index,
-                          text: todos[index].text,
-                          deadLine: todos[index].deadLine,
-                          check: todos[index].done,
-                        ),
-                      ),
-                    );
-                  },
                 ),
               );
             },
@@ -111,6 +127,7 @@ class AddNoteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      backgroundColor: const Color(0xFFFF9900),
       onPressed: () {
         Navigator.push(
           context,
@@ -124,7 +141,10 @@ class AddNoteWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),
       ),
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Color(0xFFFFFFFF),
+      ),
     );
   }
 }

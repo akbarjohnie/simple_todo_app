@@ -16,16 +16,16 @@ class ToDoApp extends StatelessWidget {
             surface: const Color(0xFFFFFFFF)),
         useMaterial3: true,
         textTheme: const TextTheme(
-          bodyLarge: (TextStyle(
-            color: Color(0xFFF85535),
-            height: 16 / 20,
-            fontWeight: FontWeight.w700,
-          )),
           bodyMedium: TextStyle(
             height: 14 / 20,
             color: Color(0xFF000000),
             fontWeight: FontWeight.w400,
             fontSize: 14,
+          ),
+          bodyLarge: TextStyle(
+            color: Color(0xFFF85535),
+            height: 16 / 20,
+            fontWeight: FontWeight.w700,
           ),
           headlineSmall: TextStyle(
             fontSize: 24,
