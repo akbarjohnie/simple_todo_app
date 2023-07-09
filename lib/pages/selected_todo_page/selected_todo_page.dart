@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 class SelectedToDo extends StatefulWidget {
   final int index;
   final String text;
-  final DateTime? deadLine;
-  final bool? check;
+  DateTime? deadLine;
+  bool? check;
 
-  const SelectedToDo({
+  SelectedToDo({
     super.key,
     required this.index,
     required this.text,
@@ -101,43 +101,71 @@ class _SelectedToDoState extends State<SelectedToDo> {
               left: 16.0,
               right: 16.0,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      const EdgeInsets.all(0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        final chosenDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 30),
+                          ),
+                        );
+                        setState(() {
+                          widget.deadLine = chosenDate;
+                        });
+                      },
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0),
+                        ),
+                      ),
+                      child: Text(
+                        'Дедлайн',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                      ),
                     ),
-                  ),
+                    Checkbox(
+                      value: widget.check,
+                      onChanged: (value) {
+                        final check = value ?? false;
+                        setState(
+                          () {
+                            todos[widget.index] = todos[widget.index].copyWith(
+                              widget.text,
+                              widget.deadLine,
+                              check,
+                            );
+                          },
+                        );
+                      },
+                      activeColor: const Color(0xFF45B443),
+                    )
+                  ],
+                ),
+                Visibility(
+                  visible: (widget.deadLine != null),
                   child: Text(
-                    'Дедлайн',
+                    'Дата: ${widget.deadLine?.day}.${widget.deadLine?.month}.${widget.deadLine?.year}',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                         ),
                   ),
                 ),
-                Checkbox(
-                  value: widget.check,
-                  onChanged: (value) {
-                    final check = value ?? false;
-                    setState(
-                      () {
-                        todos[widget.index] = todos[widget.index].copyWith(
-                          widget.text,
-                          widget.deadLine,
-                          check,
-                        );
-                      },
-                    );
-                  },
-                  activeColor: const Color(0xFF45B443),
-                )
               ],
             ),
           ),
+          const SizedBox(height: 14),
           const Divider(
             indent: 16,
             endIndent: 16,

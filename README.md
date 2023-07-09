@@ -1,16 +1,13 @@
 # base_app_july
 
-A new Flutter project.
+## Несколько недоработана вёрстка (когда в "todo_list_page" у ListTile-а оставляем subtitle) при свайпе происходит наложение заметок друг на друга
 
-## Getting Started
+## Не добавлен функционал и вёрстка "Выполнено" и показать/скрыть. Когда добавлял Row, UI переставал нормально отображаться. Пока что не разбирался в чём причина (наверное нужно задавать конкретные размеры, чтобы избежать этого)
 
-This project is a starting point for a Flutter application.
+## Не добавил локальное хранилище (хотел сделать это с помощью SharedPreferences)
 
-A few resources to get you started if this is your first Flutter project:
+## Чекбокс работает не так, как нужно
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Не успел выполнить декомпозицию
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Не соблюдён DRY

@@ -14,9 +14,11 @@ class AddToDo extends StatefulWidget {
 
 class _AddToDoState extends State<AddToDo> {
   final TextEditingController _textController = TextEditingController();
+
+  DateTime? date;
+
   @override
   Widget build(BuildContext context) {
-    var date = widget.date;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -30,23 +32,27 @@ class _AddToDoState extends State<AddToDo> {
         ),
         actions: [
           TextButton(
-            // Добавляем новую заметку
+            // Добавляем новую заметку "Сохранить"
             onPressed: () {
-              setState(() {
-                todos.add(
-                  ToDoModel(
-                    text: _textController.text,
-                    deadLine: date,
-                    done: (date != null),
-                  ),
-                );
-              });
-              Navigator.pushAndRemoveUntil(
+              if (_textController.text != '' &&
+                  _textController.text.split(' ').join() != '') {
+                setState(() {
+                  todos.add(
+                    ToDoModel(
+                      text: _textController.text,
+                      deadLine: date,
+                      done: (date != null),
+                    ),
+                  );
+                });
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ToDoListPage(),
                   ),
-                  (route) => false);
+                  (route) => false,
+                );
+              }
             },
             child: const Text(
               'Сохранить',
@@ -90,42 +96,56 @@ class _AddToDoState extends State<AddToDo> {
               left: 16.0,
               right: 16.0,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton(
-                  onPressed: () async {
-                    final choseDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(
-                        const Duration(days: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        final chosenDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 30),
+                          ),
+                        );
+                        setState(() {
+                          date = chosenDate;
+                        });
+                      },
+                      child: Text(
+                        'Дедлайн',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
                       ),
-                    );
-
-                    todos[widget.index] = todos[widget.index].copyWith(
-                      _textController.text,
-                      choseDate,
-                      true,
-                    );
-                    date = todos[widget.index].deadLine;
-                  },
-                  child: Text(
-                    'Дедлайн',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    ),
+                    Checkbox(
+                      activeColor: const Color(0xFF45B443),
+                      value: (date != null),
+                      onChanged: (_) {},
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Visibility(
+                    // Отображаем/не отображаем дедлайн
+                    // в зависимости от содержимого 'date'
+                    visible: (date != null),
+                    child: Text(
+                      'Дата: ${date?.day}.${date?.month}.${date?.year}',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
                   ),
                 ),
-                Checkbox(
-                  activeColor: const Color(0xFF45B443),
-                  value: (date != null),
-                  onChanged: (value) {
-                    if (date != null) {}
-                  },
-                )
               ],
             ),
           ),

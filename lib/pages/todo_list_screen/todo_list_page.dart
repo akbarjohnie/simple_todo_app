@@ -54,17 +54,23 @@ class _ToDoListPageState extends State<ToDoListPage> {
                 ),
                 onDismissed: (DismissDirection direction) {
                   if (direction == DismissDirection.endToStart) {
-                    setState(
-                      () {
-                        todos.removeAt(index);
-                      },
-                    );
+                    setState(() {
+                      todos.removeAt(index);
+                    });
+                  }
+                  if (direction == DismissDirection.startToEnd) {
+                    setState(() {
+                      todos[index] = todos[index].copyWith(
+                        todos[index].text,
+                        todos[index].deadLine,
+                        true,
+                      );
+                    });
                   }
                 },
                 child: SizedBox(
-                  height: 40,
+                  height: 43,
                   child: ListTile(
-                    // subtitle: Text("${todos[index].deadLine}") ,
                     titleTextStyle: themeData.textTheme.bodyLarge!.copyWith(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
@@ -88,12 +94,19 @@ class _ToDoListPageState extends State<ToDoListPage> {
                     title: Text(
                       todos[index].text,
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
-                    subtitle: Visibility(
-                      visible: (todos[index].deadLine != null),
-                      replacement: const SizedBox.shrink(),
-                      child: Text("${todos[index].deadLine}"),
-                    ),
+                    // subtitle: Visibility(
+                    //   // Хотел сделать вкл/выкл отображение
+                    //   // дедлайна в зависимости от того пустой он
+                    //   // или же нет.
+                    //   // Оно работает не так как я хотел
+                    //   visible: (todos[index].deadLine != null),
+                    //   replacement: const SizedBox.shrink(),
+                    //   child: (todos[index].deadLine == null)
+                    //       ? Container()
+                    //       : Text('${todos[index].deadLine}'),
+                    // ),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -114,13 +127,13 @@ class _ToDoListPageState extends State<ToDoListPage> {
           ),
         ),
       ),
-      floatingActionButton: const AddNoteWidget(),
+      floatingActionButton: const AddNoteButton(),
     );
   }
 }
 
-class AddNoteWidget extends StatelessWidget {
-  const AddNoteWidget({
+class AddNoteButton extends StatelessWidget {
+  const AddNoteButton({
     super.key,
   });
 
