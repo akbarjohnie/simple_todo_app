@@ -40,16 +40,26 @@ class _ToDoListPageState extends State<ToDoListPage> {
             itemBuilder: (context, index) {
               return Dismissible(
                 key: UniqueKey(),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  child: const Icon(
-                    Icons.delete_outline,
+                background: Container(
+                  alignment: Alignment.centerLeft,
+                  color: themeData.colorScheme.secondary,
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Icon(
+                      Icons.done,
+                      color: themeData.colorScheme.surface,
+                    ),
                   ),
                 ),
-                background: Container(
-                  color: Colors.green,
-                  child: const Icon(
-                    Icons.done,
+                secondaryBackground: Container(
+                  alignment: Alignment.centerRight,
+                  color: themeData.colorScheme.error,
+                  child: Container(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Icon(
+                      Icons.delete_outline,
+                      color: themeData.colorScheme.surface,
+                    ),
                   ),
                 ),
                 onDismissed: (DismissDirection direction) {
@@ -68,59 +78,56 @@ class _ToDoListPageState extends State<ToDoListPage> {
                     });
                   }
                 },
-                child: SizedBox(
-                  height: 43,
-                  child: ListTile(
-                    titleTextStyle: themeData.textTheme.bodyLarge!.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    leading: Checkbox(
-                      value: todos[index].done,
-                      onChanged: (value) {
-                        final cheched = value ?? false;
-                        setState(
-                          () {
-                            todos[index] = todos[index].copyWith(
-                              todos[index].text,
-                              todos[index].deadLine,
-                              cheched,
-                            );
-                          },
-                        );
-                      },
-                      activeColor: const Color(0xFF45B443),
-                    ),
-                    title: Text(
-                      todos[index].text,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    // subtitle: Visibility(
-                    //   // Хотел сделать вкл/выкл отображение
-                    //   // дедлайна в зависимости от того пустой он
-                    //   // или же нет.
-                    //   // Оно работает не так как я хотел
-                    //   visible: (todos[index].deadLine != null),
-                    //   replacement: const SizedBox.shrink(),
-                    //   child: (todos[index].deadLine == null)
-                    //       ? Container()
-                    //       : Text('${todos[index].deadLine}'),
-                    // ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectedToDo(
-                            index: index,
-                            text: todos[index].text,
-                            deadLine: todos[index].deadLine,
-                            check: todos[index].done,
-                          ),
-                        ),
+                child: ListTile(
+                  titleTextStyle: themeData.textTheme.bodyLarge!.copyWith(
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  leading: Checkbox(
+                    value: todos[index].done,
+                    onChanged: (value) {
+                      final cheched = value ?? false;
+                      setState(
+                        () {
+                          todos[index] = todos[index].copyWith(
+                            todos[index].text,
+                            todos[index].deadLine,
+                            cheched,
+                          );
+                        },
                       );
                     },
+                    activeColor: const Color(0xFF45B443),
                   ),
+                  title: Text(
+                    todos[index].text,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  subtitle: Visibility(
+                    // Хотел сделать вкл/выкл отображение
+                    // дедлайна в зависимости от того пустой он
+                    // или же нет.
+                    // Оно работает не так как я хотел
+                    visible: (todos[index].deadLine != null),
+                    replacement: const SizedBox.shrink(),
+                    child: (todos[index].deadLine == null)
+                        ? Container()
+                        : Text('${todos[index].deadLine}'),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SelectedToDo(
+                          index: index,
+                          text: todos[index].text,
+                          deadLine: todos[index].deadLine,
+                          check: todos[index].done,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               );
             },

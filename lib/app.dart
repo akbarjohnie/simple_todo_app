@@ -10,10 +10,13 @@ class ToDoApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFFFF9900),
-            background: const Color(0xFFEDEDED),
-            primary: const Color(0xFFFF9900),
-            surface: const Color(0xFFFFFFFF)),
+          seedColor: const Color(0xFFFF9900),
+          background: const Color(0xFFEDEDED),
+          primary: const Color(0xFFFF9900),
+          secondary: const Color(0xFF45B443),
+          error: const Color(0xFFF85535),
+          surface: const Color(0xFFFFFFFF),
+        ),
         useMaterial3: true,
         textTheme: const TextTheme(
           bodyMedium: TextStyle(

@@ -1,14 +1,13 @@
-import 'package:base_app_july/models/todo_models.dart';
 import 'package:base_app_july/pages/todo_list_screen/todo_list_page.dart';
 import 'package:flutter/material.dart';
 
 class SelectedToDo extends StatefulWidget {
   final int index;
   final String text;
-  DateTime? deadLine;
-  bool? check;
+  final DateTime? deadLine;
+  final bool? check;
 
-  SelectedToDo({
+  const SelectedToDo({
     super.key,
     required this.index,
     required this.text,
@@ -23,23 +22,34 @@ class SelectedToDo extends StatefulWidget {
 class _SelectedToDoState extends State<SelectedToDo> {
   final TextEditingController _textController = TextEditingController();
 
+  DateTime? _date;
+
   @override
   void initState() {
     super.initState();
     _textController.text = widget.text;
+    _date = widget.deadLine;
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: themeData.colorScheme.background,
         // Отменить добавление (нажали крестик)
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.maybePop(context);
           },
         ),
         actions: [
@@ -49,7 +59,7 @@ class _SelectedToDoState extends State<SelectedToDo> {
               setState(() {
                 todos[widget.index] = todos[widget.index].copyWith(
                   _textController.text,
-                  widget.deadLine,
+                  _date,
                   widget.check,
                 );
                 Navigator.pushAndRemoveUntil(
@@ -83,11 +93,11 @@ class _SelectedToDoState extends State<SelectedToDo> {
             ),
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: themeData.colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
             child: TextField(
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: themeData.textTheme.bodyMedium,
               decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
@@ -118,7 +128,7 @@ class _SelectedToDoState extends State<SelectedToDo> {
                           ),
                         );
                         setState(() {
-                          widget.deadLine = chosenDate;
+                          _date = chosenDate;
                         });
                       },
                       style: ButtonStyle(
@@ -128,38 +138,38 @@ class _SelectedToDoState extends State<SelectedToDo> {
                       ),
                       child: Text(
                         'Дедлайн',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                            ),
+                        style: themeData.textTheme.bodyLarge?.copyWith(
+                          color: const Color.fromRGBO(0, 0, 0, 1),
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                     Checkbox(
-                      value: widget.check,
-                      onChanged: (value) {
-                        final check = value ?? false;
-                        setState(
-                          () {
-                            todos[widget.index] = todos[widget.index].copyWith(
-                              widget.text,
-                              widget.deadLine,
-                              check,
-                            );
-                          },
-                        );
+                      value: (_date != null),
+                      onChanged: (_) {
+                        // final check = value ?? false;
+                        // setState(
+                        //   () {
+                        //     todos[widget.index] = todos[widget.index].copyWith(
+                        //       widget.text,
+                        //       _date,
+                        //       check,
+                        //     );
+                        //   },
+                        // );
                       },
                       activeColor: const Color(0xFF45B443),
                     )
                   ],
                 ),
                 Visibility(
-                  visible: (widget.deadLine != null),
+                  visible: (_date != null),
                   child: Text(
-                    'Дата: ${widget.deadLine?.day}.${widget.deadLine?.month}.${widget.deadLine?.year}',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    'Дата: ${_date?.day}.${_date?.month}.${_date?.year}',
+                    style: themeData.textTheme.bodyLarge?.copyWith(
+                      color: const Color(0xFF000000),
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ],
@@ -192,14 +202,14 @@ class _SelectedToDoState extends State<SelectedToDo> {
               children: [
                 const Icon(
                   Icons.delete_outline,
-                  color: Colors.red,
+                  color: Color(0xFFF44336),
                 ),
                 const SizedBox(
                   width: 7,
                 ),
                 Text(
                   'Удалить',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: themeData.textTheme.bodyLarge,
                 ),
               ],
             ),

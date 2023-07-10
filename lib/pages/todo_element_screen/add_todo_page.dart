@@ -6,7 +6,11 @@ class AddToDo extends StatefulWidget {
   final int index;
   final DateTime? date;
 
-  const AddToDo({super.key, required this.index, this.date});
+  const AddToDo({
+    super.key,
+    required this.index,
+    this.date,
+  });
 
   @override
   State<AddToDo> createState() => _AddToDoState();
@@ -18,16 +22,23 @@ class _AddToDoState extends State<AddToDo> {
   DateTime? date;
 
   @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: themeData.colorScheme.background,
         // Отменить добавление (нажали крестик)
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.maybePop(context);
           },
         ),
         actions: [
@@ -41,7 +52,6 @@ class _AddToDoState extends State<AddToDo> {
                     ToDoModel(
                       text: _textController.text,
                       deadLine: date,
-                      done: (date != null),
                     ),
                   );
                 });
@@ -77,12 +87,12 @@ class _AddToDoState extends State<AddToDo> {
             ),
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: themeData.colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
             child: TextField(
               maxLines: 100,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+              style: themeData.textTheme.bodyMedium!.copyWith(),
               decoration: const InputDecoration(
                 hintText: 'Здесь будут мои заметки',
                 border: InputBorder.none,
@@ -118,10 +128,10 @@ class _AddToDoState extends State<AddToDo> {
                       },
                       child: Text(
                         'Дедлайн',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                            ),
+                        style: themeData.textTheme.bodyLarge?.copyWith(
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                     Checkbox(
@@ -139,10 +149,10 @@ class _AddToDoState extends State<AddToDo> {
                     visible: (date != null),
                     child: Text(
                       'Дата: ${date?.day}.${date?.month}.${date?.year}',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                          ),
+                      style: themeData.textTheme.bodyLarge?.copyWith(
+                        color: const Color(0xFF000000),
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                 ),
