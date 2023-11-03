@@ -1,15 +1,14 @@
 import 'package:base_app_july/models/todo_models.dart';
 import 'package:base_app_july/pages/todo_list_screen/todo_list_page.dart';
+import 'package:base_app_july/pages/widgets/todo_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class AddToDo extends StatefulWidget {
   final int index;
-  final DateTime? date;
 
   const AddToDo({
     super.key,
     required this.index,
-    this.date,
   });
 
   @override
@@ -54,6 +53,8 @@ class _AddToDoState extends State<AddToDo> {
                       deadLine: date,
                     ),
                   );
+                  debugPrint("$date");
+                  debugPrint('${DeadLineWidget()}');
                 });
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -77,86 +78,88 @@ class _AddToDoState extends State<AddToDo> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 189,
-            padding: const EdgeInsets.only(
-              left: 18,
-              top: 8,
-              right: 18,
-              bottom: 4,
-            ),
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: themeData.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: TextField(
-              maxLines: 100,
-              style: themeData.textTheme.bodyMedium!.copyWith(),
-              decoration: const InputDecoration(
-                hintText: 'Здесь будут мои заметки',
-                border: InputBorder.none,
-              ),
-              controller: _textController,
-              strutStyle: const StrutStyle(height: 1.3),
-            ),
+          ToDoFieldWidget(
+            themeData: themeData,
+            textController: _textController,
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () async {
-                        final chosenDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(
-                            const Duration(days: 30),
-                          ),
-                        );
-                        setState(() {
-                          date = chosenDate;
-                        });
-                      },
-                      child: Text(
-                        'Дедлайн',
-                        style: themeData.textTheme.bodyLarge?.copyWith(
-                          color: const Color(0xFF000000),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+          const DeadLineWidget(),
+        ],
+      ),
+    );
+  }
+}
+
+class DeadLineWidget extends StatefulWidget {
+  final DateTime? date;
+
+  const DeadLineWidget({
+    super.key,
+    this.date,
+  });
+
+  @override
+  State<DeadLineWidget> createState() => _DeadLineWidgetState();
+}
+
+class _DeadLineWidgetState extends State<DeadLineWidget> {
+  DateTime? date;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16.0,
+        right: 16.0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () async {
+                  final chosenDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(
+                      const Duration(days: 30),
                     ),
-                    Checkbox(
-                      activeColor: const Color(0xFF45B443),
-                      value: (date != null),
-                      onChanged: (_) {},
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Visibility(
-                    // Отображаем/не отображаем дедлайн
-                    // в зависимости от содержимого 'date'
-                    visible: (date != null),
-                    child: Text(
-                      'Дата: ${date?.day}.${date?.month}.${date?.year}',
-                      style: themeData.textTheme.bodyLarge?.copyWith(
-                        color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                  );
+                  setState(() {
+                    date = chosenDate;
+                  });
+                },
+                child: Text(
+                  'Дедлайн',
+                  style: themeData.textTheme.bodyLarge?.copyWith(
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-              ],
+              ),
+              Checkbox(
+                activeColor: const Color(0xFF45B443),
+                value: (date != null),
+                onChanged: (_) {},
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Visibility(
+              // Отображаем/не отображаем дедлайн
+              // в зависимости от содержимого 'date'
+              visible: (date != null),
+              child: Text(
+                'Дата: ${date?.day}.${date?.month}.${date?.year}',
+                style: themeData.textTheme.bodyLarge?.copyWith(
+                  color: const Color(0xFF000000),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
           ),
         ],

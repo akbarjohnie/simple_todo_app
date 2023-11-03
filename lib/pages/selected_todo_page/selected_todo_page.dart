@@ -1,4 +1,5 @@
 import 'package:base_app_july/pages/todo_list_screen/todo_list_page.dart';
+import 'package:base_app_july/pages/widgets/todo_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class SelectedToDo extends StatefulWidget {
@@ -83,28 +84,9 @@ class _SelectedToDoState extends State<SelectedToDo> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 189,
-            padding: const EdgeInsets.only(
-              left: 18,
-              top: 8,
-              right: 18,
-              bottom: 4,
-            ),
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: themeData.colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: TextField(
-              style: themeData.textTheme.bodyMedium,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              controller: _textController,
-              maxLines: 100,
-              strutStyle: const StrutStyle(height: 1.3),
-            ),
+          ToDoFieldWidget(
+            themeData: themeData,
+            textController: _textController,
           ),
           Padding(
             padding: const EdgeInsets.only(
